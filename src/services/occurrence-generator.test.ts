@@ -6,7 +6,7 @@ const base: FinancialEntry = {
     description: 'Teste',
     type: 'expense',
     categoryId: 'home',
-    amount: 75,
+    amountInCents: 7500,
     startDate: '2026-08-10',
     recurrenceType: 'single',
 }
