@@ -1,5 +1,6 @@
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
-export const formatCurrency = (value: number) => currency.format(value)
+/** Formats an integer amount of BRL cents for display. */
+export const formatCurrency = (valueInCents: number) => currency.format(valueInCents / 100)
 export const monthNames = [
     'Janeiro',
     'Fevereiro',

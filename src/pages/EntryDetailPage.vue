@@ -55,7 +55,7 @@ async function remove() {
                     class="mt-2 text-2xl font-medium"
                     :class="type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
                 >
-                    {{ formatCurrency(entry.amount) }}
+                    {{ formatCurrency(entry.amountInCents) }}
                 </p>
             </div>
             <div class="flex gap-2">
@@ -106,7 +106,7 @@ async function remove() {
                                     : '—'
                             }}
                         </td>
-                        <td>{{ formatCurrency(o.amount) }}</td>
+                        <td>{{ formatCurrency(o.amountInCents) }}</td>
                         <td>{{ formatDate(occurrenceDate(o.referenceMonth, entry.startDate)) }}</td>
                         <td><StatusBadge :status="o.status" /></td>
                         <td>

@@ -23,7 +23,9 @@ watch(
     () => [props.open, props.entry] as const,
     () => {
         if (!props.open) return
-        Object.assign(form, blank(), props.entry ?? {})
+        Object.assign(form, blank(), props.entry ?? {}, {
+            amount: props.entry ? props.entry.amountInCents / 100 : 0,
+        })
         for (const k in errors) delete errors[k]
     },
     { immediate: true },
@@ -48,7 +50,7 @@ async function submit() {
         description: form.description.trim(),
         type: props.type,
         categoryId: form.categoryId,
-        amount: Number(form.amount),
+        amountInCents: Math.round(Number(form.amount) * 100),
         startDate: form.startDate,
         recurrenceType: form.recurrenceType,
         account: form.account.trim() || undefined,

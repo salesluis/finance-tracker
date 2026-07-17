@@ -50,7 +50,7 @@ const movements = computed(() =>
         }),
 )
 async function ensure() {
-    await store.ensureYear(year.value)
+    await store.ensureOccurrencesThroughYear(year.value)
 }
 watch(year, ensure)
 onMounted(ensure)
@@ -172,7 +172,7 @@ onMounted(ensure)
                                 "
                             />
                         </td>
-                        <td>{{ formatCurrency(o.amount) }}</td>
+                        <td>{{ formatCurrency(o.amountInCents) }}</td>
                         <td>
                             {{
                                 formatDate(

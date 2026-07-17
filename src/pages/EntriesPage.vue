@@ -93,7 +93,7 @@ async function remove(entry: FinancialEntry) {
                         }}</small>
                     </td>
                     <td><CategoryBadge :category="store.categoryMap.get(entry.categoryId)" /></td>
-                    <td class="font-medium !text-zinc-100">{{ formatCurrency(entry.amount) }}</td>
+                    <td class="font-medium !text-zinc-100">{{ formatCurrency(entry.amountInCents) }}</td>
                     <td>
                         {{
                             nextOccurrence(entry)?.installmentNumber

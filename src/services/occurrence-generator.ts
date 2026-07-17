@@ -21,7 +21,7 @@ export function generateOccurrences(
                 id: occurrenceId(entry.id, startMonth),
                 entryId: entry.id,
                 referenceMonth: startMonth,
-                amount: entry.amount,
+                amountInCents: entry.amountInCents,
                 status,
             },
         ]
@@ -36,7 +36,7 @@ export function generateOccurrences(
                 id: occurrenceId(entry.id, month, number),
                 entryId: entry.id,
                 referenceMonth: month,
-                amount: entry.amount,
+                amountInCents: entry.amountInCents,
                 installmentNumber: number,
                 installmentCount: total,
                 status,
@@ -50,7 +50,7 @@ export function generateOccurrences(
             id: occurrenceId(entry.id, month),
             entryId: entry.id,
             referenceMonth: month,
-            amount: entry.amount,
+            amountInCents: entry.amountInCents,
             status,
         })
     return result
