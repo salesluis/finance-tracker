@@ -1,7 +1,6 @@
 import type { Category, FinancialEntry, FinancialOccurrence, ViewMode } from '@/types/finance'
 
-export const isIncluded = (o: FinancialOccurrence, mode: ViewMode) =>
-    mode === 'forecast' || o.status !== 'planned'
+export const isIncluded = (o: FinancialOccurrence, mode: ViewMode) => mode === 'forecast' || o.status !== 'planned'
 export function monthlyTotals(
     entries: FinancialEntry[],
     occurrences: FinancialOccurrence[],
@@ -12,7 +11,7 @@ export function monthlyTotals(
     const sum = (type: 'income' | 'expense') =>
         selected
             .filter((o) => entries.find((e) => e.id === o.entryId)?.type === type)
-            .reduce((a, o) => a + o.amount, 0)
+            .reduce((a, o) => a + o.amountInCents, 0)
     const income = sum('income'),
         expense = sum('expense')
     return {
@@ -21,7 +20,7 @@ export function monthlyTotals(
         balance: income - expense,
         planned: occurrences
             .filter((o) => o.referenceMonth === month && o.status === 'planned')
-            .reduce((a, o) => a + o.amount, 0),
+            .reduce((a, o) => a + o.amountInCents, 0),
     }
 }
 export function annualSeries(
@@ -53,7 +52,7 @@ export function categoryDistribution(
                         isIncluded(o, mode) &&
                         entries.find((e) => e.id === o.entryId)?.categoryId === category.id,
                 )
-                .reduce((a, o) => a + o.amount, 0),
+                .reduce((a, o) => a + o.amountInCents, 0),
         }))
         .filter((x) => x.value > 0)
 }

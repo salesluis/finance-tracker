@@ -7,7 +7,7 @@ const entries: FinancialEntry[] = [
         description: 'Salário',
         type: 'income',
         categoryId: 'salary',
-        amount: 100,
+        amountInCents: 10000,
         startDate: '2026-01-01',
         recurrenceType: 'single',
     },
@@ -16,27 +16,27 @@ const entries: FinancialEntry[] = [
         description: 'Casa',
         type: 'expense',
         categoryId: 'home',
-        amount: 40,
+        amountInCents: 4000,
         startDate: '2026-01-01',
         recurrenceType: 'single',
     },
 ]
 const occurrences: FinancialOccurrence[] = [
-    { id: '1', entryId: 'i', referenceMonth: '2026-01', amount: 100, status: 'received' },
-    { id: '2', entryId: 'e', referenceMonth: '2026-01', amount: 40, status: 'planned' },
+    { id: '1', entryId: 'i', referenceMonth: '2026-01', amountInCents: 10000, status: 'received' },
+    { id: '2', entryId: 'e', referenceMonth: '2026-01', amountInCents: 4000, status: 'planned' },
 ]
 describe('monthlyTotals', () => {
     it('separa realizado de previsão', () => {
         expect(monthlyTotals(entries, occurrences, '2026-01', 'actual')).toMatchObject({
-            income: 100,
+            income: 10000,
             expense: 0,
-            balance: 100,
+            balance: 10000,
         })
         expect(monthlyTotals(entries, occurrences, '2026-01', 'forecast')).toMatchObject({
-            income: 100,
-            expense: 40,
-            balance: 60,
-            planned: 40,
+            income: 10000,
+            expense: 4000,
+            balance: 6000,
+            planned: 4000,
         })
     })
 })

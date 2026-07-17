@@ -18,11 +18,15 @@ export const useFinanceStore = defineStore('finance', () => {
         error = ref<string | null>(null),
         initialized = ref(false)
     async function refresh() {
-        ;[categories.value, entries.value, occurrences.value] = await Promise.all([
+        // Commit the three resources together so a failed request never exposes a partially refreshed state.
+        const [nextCategories, nextEntries, nextOccurrences] = await Promise.all([
             financeRepository.getCategories(),
             financeRepository.getEntries(),
             financeRepository.getOccurrences(),
         ])
+        categories.value = nextCategories
+        entries.value = nextEntries
+        occurrences.value = nextOccurrences
     }
     async function run<T>(action: () => Promise<T>) {
         loading.value = true
@@ -50,8 +54,8 @@ export const useFinanceStore = defineStore('finance', () => {
             loading.value = false
         }
     }
-    async function ensureYear(year: number) {
-        await financeRepository.ensureYear(year)
+    async function ensureOccurrencesThroughYear(year: number) {
+        await financeRepository.ensureOccurrencesThroughYear(year)
         await refresh()
     }
     const categoryMap = computed(() => new Map(categories.value.map((c) => [c.id, c])))
@@ -66,10 +70,9 @@ export const useFinanceStore = defineStore('finance', () => {
         categoryMap,
         entryMap,
         initialize,
-        ensureYear,
+        ensureOccurrencesThroughYear,
         createEntry: (input: CreateEntryInput) => run(() => financeRepository.createEntry(input)),
-        updateEntry: (id: string, input: UpdateEntryInput) =>
-            run(() => financeRepository.updateEntry(id, input)),
+        updateEntry: (id: string, input: UpdateEntryInput) => run(() => financeRepository.updateEntry(id, input)),
         deleteEntry: (id: string) => run(() => financeRepository.deleteEntry(id)),
         updateStatus: (id: string, status: EntryStatus) =>
             run(() => financeRepository.updateOccurrenceStatus(id, status)),
