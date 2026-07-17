@@ -21,10 +21,7 @@ describe('generateOccurrences', () => {
         expect(result.map((x) => x.referenceMonth)).toEqual(['2026-08', '2026-09', '2026-10'])
     })
     it('gera mensalidades até dezembro do ano consultado', () => {
-        const result = generateOccurrences(
-            { ...base, recurrenceType: 'monthly', startDate: '2026-11-10' },
-            2027,
-        )
+        const result = generateOccurrences({ ...base, recurrenceType: 'monthly', startDate: '2026-11-10' }, 2027)
         expect(result).toHaveLength(14)
         expect(result.at(-1)?.referenceMonth).toBe('2027-12')
     })

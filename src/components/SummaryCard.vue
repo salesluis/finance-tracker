@@ -18,13 +18,7 @@ defineProps<{
         </div>
         <strong
             class="text-2xl font-semibold tracking-tight"
-            :class="
-                tone === 'green'
-                    ? 'text-emerald-400'
-                    : tone === 'red'
-                      ? 'text-rose-400'
-                      : 'text-zinc-100'
-            "
+            :class="tone === 'green' ? 'text-emerald-400' : tone === 'red' ? 'text-rose-400' : 'text-zinc-100'"
             >{{ value }}</strong
         >
         <p v-if="hint" class="mt-2 text-xs text-zinc-600">{{ hint }}</p>

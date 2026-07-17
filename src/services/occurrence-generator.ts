@@ -8,10 +8,7 @@ function addMonths(month: string, amount: number) {
 export const occurrenceId = (entryId: string, month: string, installment?: number) =>
     `${entryId}:${month}:${installment ?? 'r'}`
 
-export function generateOccurrences(
-    entry: FinancialEntry,
-    throughYear: number,
-): FinancialOccurrence[] {
+export function generateOccurrences(entry: FinancialEntry, throughYear: number): FinancialOccurrence[] {
     const startMonth = entry.startDate.slice(0, 7)
     const status = 'planned' as const
     if (entry.recurrenceType === 'single') {

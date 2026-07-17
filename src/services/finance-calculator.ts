@@ -1,7 +1,6 @@
 import type { Category, FinancialEntry, FinancialOccurrence, ViewMode } from '@/types/finance'
 
-export const isIncluded = (o: FinancialOccurrence, mode: ViewMode) =>
-    mode === 'forecast' || o.status !== 'planned'
+export const isIncluded = (o: FinancialOccurrence, mode: ViewMode) => mode === 'forecast' || o.status !== 'planned'
 export function monthlyTotals(
     entries: FinancialEntry[],
     occurrences: FinancialOccurrence[],

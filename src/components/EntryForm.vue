@@ -75,9 +75,7 @@ async function submit() {
             class="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm"
             @click.self="emit('close')"
         >
-            <section
-                class="h-full w-full max-w-lg overflow-y-auto border-l border-line bg-[#171719] p-6 shadow-2xl"
-            >
+            <section class="h-full w-full max-w-lg overflow-y-auto border-l border-line bg-[#171719] p-6 shadow-2xl">
                 <div class="mb-7 flex items-start justify-between">
                     <div>
                         <h2 class="text-xl font-semibold">
@@ -95,11 +93,7 @@ async function submit() {
                 <form class="space-y-5" @submit.prevent="submit">
                     <div>
                         <label class="label">Descrição</label
-                        ><input
-                            v-model="form.description"
-                            class="field"
-                            placeholder="Ex.: Internet"
-                        />
+                        ><input v-model="form.description" class="field" placeholder="Ex.: Internet" />
                         <p v-if="errors.description" class="mt-1 text-xs text-rose-400">
                             {{ errors.description }}
                         </p>
@@ -119,13 +113,7 @@ async function submit() {
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="label">Valor</label
-                            ><input
-                                v-model.number="form.amount"
-                                type="number"
-                                min="0.01"
-                                step="0.01"
-                                class="field"
-                            />
+                            ><input v-model.number="form.amount" type="number" min="0.01" step="0.01" class="field" />
                             <p v-if="errors.amount" class="mt-1 text-xs text-rose-400">
                                 {{ errors.amount }}
                             </p>
@@ -143,27 +131,14 @@ async function submit() {
                             <option value="monthly">Mensal</option>
                         </select>
                     </div>
-                    <div
-                        v-if="form.recurrenceType === 'installment'"
-                        class="grid grid-cols-2 gap-4"
-                    >
+                    <div v-if="form.recurrenceType === 'installment'" class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="label">Parcela inicial</label
-                            ><input
-                                v-model.number="form.initialInstallment"
-                                type="number"
-                                min="1"
-                                class="field"
-                            />
+                            ><input v-model.number="form.initialInstallment" type="number" min="1" class="field" />
                         </div>
                         <div>
                             <label class="label">Total de parcelas</label
-                            ><input
-                                v-model.number="form.installmentCount"
-                                type="number"
-                                min="1"
-                                class="field"
-                            />
+                            ><input v-model.number="form.installmentCount" type="number" min="1" class="field" />
                         </div>
                         <p v-if="errors.installments" class="col-span-2 text-xs text-rose-400">
                             {{ errors.installments }}
@@ -171,24 +146,14 @@ async function submit() {
                     </div>
                     <div v-if="type === 'expense'">
                         <label class="label">Conta</label
-                        ><input
-                            v-model="form.account"
-                            class="field"
-                            placeholder="Ex.: Cartão principal"
-                        />
+                        ><input v-model="form.account" class="field" placeholder="Ex.: Cartão principal" />
                     </div>
                     <div>
                         <label class="label">Observação</label
-                        ><textarea
-                            v-model="form.notes"
-                            rows="3"
-                            class="field !h-auto py-3"
-                            placeholder="Opcional"
-                        />
+                        ><textarea v-model="form.notes" rows="3" class="field !h-auto py-3" placeholder="Opcional" />
                     </div>
                     <div class="flex justify-end gap-3 border-t border-line pt-6">
-                        <button type="button" class="btn-secondary" @click="emit('close')">
-                            Cancelar</button
+                        <button type="button" class="btn-secondary" @click="emit('close')">Cancelar</button
                         ><button class="btn-primary" :disabled="store.loading">
                             {{ store.loading ? 'Salvando…' : 'Salvar' }}
                         </button>

@@ -26,5 +26,4 @@ export function occurrenceDate(referenceMonth: string, startDate: string) {
     return `${year}-${String(month).padStart(2, '0')}-${String(Math.min(day, last)).padStart(2, '0')}`
 }
 export const currentMonth = () => new Date().toISOString().slice(0, 7)
-export const uid = () =>
-    globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`
+export const uid = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`

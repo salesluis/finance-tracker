@@ -3,12 +3,7 @@ import { entries } from '@/mocks/entries'
 import { occurrences } from '@/mocks/occurrences'
 import { generateOccurrences } from '@/services/occurrence-generator'
 import { uid } from '@/lib/format'
-import type {
-    CreateEntryInput,
-    EntryStatus,
-    FinanceSnapshot,
-    UpdateEntryInput,
-} from '@/types/finance'
+import type { CreateEntryInput, EntryStatus, FinanceSnapshot, UpdateEntryInput } from '@/types/finance'
 import type { FinanceRepository } from './finance-repository'
 
 const KEY = 'finance-tracker:v2'
@@ -50,9 +45,11 @@ export class MockFinanceRepository implements FinanceRepository {
         this.write(seed)
         return seed
     }
+
     private write(data: FinanceSnapshot) {
         localStorage.setItem(KEY, JSON.stringify(data))
     }
+
     async getCategories() {
         return clone(this.read().categories)
     }
@@ -67,9 +64,7 @@ export class MockFinanceRepository implements FinanceRepository {
         for (const entry of data.entries) {
             if ((data.generatedThrough[entry.id] ?? 0) >= year) continue
             const existing = new Set(data.occurrences.map((o) => o.id))
-            data.occurrences.push(
-                ...generateOccurrences(entry, year).filter((o) => !existing.has(o.id)),
-            )
+            data.occurrences.push(...generateOccurrences(entry, year).filter((o) => !existing.has(o.id)))
             data.generatedThrough[entry.id] = year
         }
         this.write(data)

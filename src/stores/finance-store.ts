@@ -72,8 +72,7 @@ export const useFinanceStore = defineStore('finance', () => {
         initialize,
         ensureOccurrencesThroughYear,
         createEntry: (input: CreateEntryInput) => run(() => financeRepository.createEntry(input)),
-        updateEntry: (id: string, input: UpdateEntryInput) =>
-            run(() => financeRepository.updateEntry(id, input)),
+        updateEntry: (id: string, input: UpdateEntryInput) => run(() => financeRepository.updateEntry(id, input)),
         deleteEntry: (id: string) => run(() => financeRepository.deleteEntry(id)),
         updateStatus: (id: string, status: EntryStatus) =>
             run(() => financeRepository.updateOccurrenceStatus(id, status)),

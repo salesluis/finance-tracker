@@ -17,28 +17,13 @@ const year = ref(Number(now.slice(0, 4))),
     month = ref(Number(now.slice(5))),
     mode = ref<ViewMode>('forecast')
 const monthKey = computed(() => `${year.value}-${String(month.value).padStart(2, '0')}`)
-const totals = computed(() =>
-    monthlyTotals(store.entries, store.occurrences, monthKey.value, mode.value),
-)
-const series = computed(() =>
-    annualSeries(store.entries, store.occurrences, year.value, mode.value),
-)
+const totals = computed(() => monthlyTotals(store.entries, store.occurrences, monthKey.value, mode.value))
+const series = computed(() => annualSeries(store.entries, store.occurrences, year.value, mode.value))
 const distribution = computed(() =>
-    categoryDistribution(
-        store.entries,
-        store.occurrences,
-        store.categories,
-        monthKey.value,
-        mode.value,
-    ),
+    categoryDistribution(store.entries, store.occurrences, store.categories, monthKey.value, mode.value),
 )
 const availableYears = computed(() =>
-    Array.from(
-        new Set([
-            year.value,
-            ...store.occurrences.map((o) => Number(o.referenceMonth.slice(0, 4))),
-        ]),
-    ).sort(),
+    Array.from(new Set([year.value, ...store.occurrences.map((o) => Number(o.referenceMonth.slice(0, 4)))])).sort(),
 )
 const movements = computed(() =>
     store.occurrences
@@ -127,17 +112,14 @@ onMounted(ensure)
                     <p class="mt-1 text-xs text-zinc-600">Evolução mensal em {{ year }}</p>
                 </div>
                 <div class="flex gap-3 text-xs">
-                    <span class="text-emerald-400">● Receita</span
-                    ><span class="text-rose-400">● Despesa</span>
+                    <span class="text-emerald-400">● Receita</span><span class="text-rose-400">● Despesa</span>
                 </div>
             </div>
             <FinanceLineChart :data="series" />
         </article>
         <article class="card p-5">
             <h2 class="font-semibold">Despesas por categoria</h2>
-            <p class="mt-1 text-xs text-zinc-600">
-                Distribuição de {{ monthNames[month - 1].toLowerCase() }}
-            </p>
+            <p class="mt-1 text-xs text-zinc-600">Distribuição de {{ monthNames[month - 1].toLowerCase() }}</p>
             <CategoryPieChart :data="distribution" />
         </article>
     </section>
@@ -165,11 +147,7 @@ onMounted(ensure)
                         </td>
                         <td>
                             <CategoryBadge
-                                :category="
-                                    store.categoryMap.get(
-                                        store.entryMap.get(o.entryId)?.categoryId || '',
-                                    )
-                                "
+                                :category="store.categoryMap.get(store.entryMap.get(o.entryId)?.categoryId || '')"
                             />
                         </td>
                         <td>{{ formatCurrency(o.amountInCents) }}</td>
@@ -178,18 +156,13 @@ onMounted(ensure)
                                 formatDate(
                                     occurrenceDate(
                                         o.referenceMonth,
-                                        store.entryMap.get(o.entryId)?.startDate ||
-                                            `${o.referenceMonth}-01`,
+                                        store.entryMap.get(o.entryId)?.startDate || `${o.referenceMonth}-01`,
                                     ),
                                 )
                             }}
                         </td>
                         <td>
-                            {{
-                                o.installmentNumber
-                                    ? `${o.installmentNumber}/${o.installmentCount}`
-                                    : '—'
-                            }}
+                            {{ o.installmentNumber ? `${o.installmentNumber}/${o.installmentCount}` : '—' }}
                         </td>
                         <td><StatusBadge :status="o.status" /></td>
                     </tr>
