@@ -19,19 +19,14 @@ const color = (d: { category: Category }) => d.category.backgroundColor
                 class="flex items-center justify-between gap-3 text-xs text-zinc-400"
             >
                 <span class="flex items-center gap-2"
-                    ><i
-                        class="size-2 rounded-full"
-                        :style="{ background: item.category.backgroundColor }"
-                    />{{ item.category.name }}</span
+                    ><i class="size-2 rounded-full" :style="{ background: item.category.backgroundColor }" />{{
+                        item.category.name
+                    }}</span
                 ><b class="text-zinc-200"
-                    >{{
-                        Math.round((item.value / data.reduce((a, x) => a + x.value, 0)) * 100)
-                    }}%</b
+                    >{{ Math.round((item.value / data.reduce((a, x) => a + x.value, 0)) * 100) }}%</b
                 >
             </li>
         </ul>
     </div>
-    <div v-else class="grid h-56 place-items-center text-sm text-zinc-600">
-        Sem despesas para este filtro.
-    </div>
+    <div v-else class="grid h-56 place-items-center text-sm text-zinc-600">Sem despesas para este filtro.</div>
 </template>

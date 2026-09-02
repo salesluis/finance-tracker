@@ -11,6 +11,6 @@ const labels = { planned: 'Planejado', paid: 'Pago', received: 'Recebido' }
                 ? 'border-amber-900/70 bg-amber-950/50 text-amber-300'
                 : 'border-emerald-900/70 bg-emerald-950/50 text-emerald-300'
         "
-        >{{ labels[status] }}</span
-    >
+        >{{ labels[status] }}
+    </span>
 </template>

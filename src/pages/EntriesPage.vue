@@ -16,9 +16,7 @@ const editing = ref<FinancialEntry>()
 const title = computed(() => (props.type === 'expense' ? 'Despesas' : 'Receitas'))
 const entries = computed(() =>
     store.entries.filter(
-        (e) =>
-            e.type === props.type &&
-            e.description.toLowerCase().includes(query.value.toLowerCase()),
+        (e) => e.type === props.type && e.description.toLowerCase().includes(query.value.toLowerCase()),
     ),
 )
 function nextOccurrence(entry: FinancialEntry) {
@@ -42,8 +40,7 @@ function close() {
     editing.value = undefined
 }
 async function remove(entry: FinancialEntry) {
-    if (confirm(`Excluir “${entry.description}” e todo o seu histórico?`))
-        await store.deleteEntry(entry.id)
+    if (confirm(`Excluir “${entry.description}” e todo o seu histórico?`)) await store.deleteEntry(entry.id)
 }
 </script>
 <template>
@@ -54,9 +51,7 @@ async function remove(entry: FinancialEntry) {
                 ? 'Acompanhe compromissos, parcelas e vencimentos.'
                 : 'Organize entradas únicas e receitas recorrentes.'
         "
-        ><button class="btn-primary" @click="formOpen = true">
-            <Plus :size="16" />Novo lançamento
-        </button></PageHeader
+        ><button class="btn-primary" @click="formOpen = true"><Plus :size="16" />Novo lançamento</button></PageHeader
     >
     <div class="mb-5 flex items-center gap-3">
         <div class="relative max-w-sm flex-1">
@@ -88,12 +83,10 @@ async function remove(entry: FinancialEntry) {
                             :to="`${type === 'expense' ? '/despesas' : '/receitas'}/${entry.id}`"
                             class="font-medium text-zinc-100 hover:underline"
                             >{{ entry.description }}</RouterLink
-                        ><small class="mt-1 block text-zinc-600">{{
-                            entry.account || 'Sem conta informada'
-                        }}</small>
+                        ><small class="mt-1 block text-zinc-600">{{ entry.account || 'Sem conta informada' }}</small>
                     </td>
                     <td><CategoryBadge :category="store.categoryMap.get(entry.categoryId)" /></td>
-                    <td class="font-medium !text-zinc-100">{{ formatCurrency(entry.amount) }}</td>
+                    <td class="font-medium !text-zinc-100">{{ formatCurrency(entry.amountInCents) }}</td>
                     <td>
                         {{
                             nextOccurrence(entry)?.installmentNumber
@@ -104,35 +97,22 @@ async function remove(entry: FinancialEntry) {
                     <td>
                         {{
                             nextOccurrence(entry)
-                                ? formatDate(
-                                      occurrenceDate(
-                                          nextOccurrence(entry)!.referenceMonth,
-                                          entry.startDate,
-                                      ),
-                                  )
+                                ? formatDate(occurrenceDate(nextOccurrence(entry)!.referenceMonth, entry.startDate))
                                 : '—'
                         }}
                     </td>
                     <td>
-                        <StatusBadge
-                            v-if="nextOccurrence(entry)"
-                            :status="nextOccurrence(entry)!.status"
-                        /><span v-else class="text-xs text-zinc-600">Concluído</span>
+                        <StatusBadge v-if="nextOccurrence(entry)" :status="nextOccurrence(entry)!.status" /><span
+                            v-else
+                            class="text-xs text-zinc-600"
+                            >Concluído</span
+                        >
                     </td>
                     <td>
                         <div class="flex justify-end gap-1">
-                            <button
-                                class="btn-ghost !h-8 !px-2"
-                                title="Editar"
-                                @click="edit(entry)"
-                            >
+                            <button class="btn-ghost !h-8 !px-2" title="Editar" @click="edit(entry)">
                                 <MoreHorizontal :size="17" /></button
-                            ><button
-                                class="btn-ghost !h-8 !px-2 text-rose-400"
-                                @click="remove(entry)"
-                            >
-                                Excluir
-                            </button>
+                            ><button class="btn-ghost !h-8 !px-2 text-rose-400" @click="remove(entry)">Excluir</button>
                         </div>
                     </td>
                 </tr>
@@ -141,9 +121,7 @@ async function remove(entry: FinancialEntry) {
     </div>
     <div v-else class="card grid min-h-72 place-items-center p-8 text-center">
         <div>
-            <div
-                class="mx-auto mb-4 grid size-12 place-items-center rounded-2xl bg-zinc-800 text-zinc-500"
-            >
+            <div class="mx-auto mb-4 grid size-12 place-items-center rounded-2xl bg-zinc-800 text-zinc-500">
                 <Plus />
             </div>
             <h2 class="font-medium">Nenhum lançamento encontrado</h2>

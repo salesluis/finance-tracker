@@ -15,7 +15,8 @@ export interface FinancialEntry {
     description: string
     type: EntryType
     categoryId: string
-    amount: number
+    /** Monetary value in integer BRL cents. Example: 4590 represents R$ 45,90. */
+    amountInCents: number
     startDate: string
     recurrenceType: RecurrenceType
     initialInstallment?: number
@@ -27,7 +28,8 @@ export interface FinancialOccurrence {
     id: string
     entryId: string
     referenceMonth: string
-    amount: number
+    /** Monetary value in integer BRL cents. */
+    amountInCents: number
     installmentNumber?: number
     installmentCount?: number
     status: EntryStatus

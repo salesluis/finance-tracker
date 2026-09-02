@@ -8,22 +8,12 @@ const expense = (d: { expense: number }) => d.expense
 </script>
 <template>
     <div class="h-72">
-        <VisXYContainer
-            :data="data"
-            :margin="{ left: 10, right: 10, top: 20, bottom: 10 }"
-            height="100%"
-        >
-            <VisLine
-                :x="x"
-                :y="[income, expense]"
-                :color="['#34d399', '#fb7185']"
-                :line-width="3"
+        <VisXYContainer :data="data" :margin="{ left: 10, right: 10, top: 20, bottom: 10 }" height="100%">
+            <VisLine :x="x" :y="[income, expense]" :color="['#34d399', '#fb7185']" :line-width="3" />
+            <VisAxis type="x" :tick-format="(v: number) => monthNames[v].slice(0, 3)" :grid-line="false" /><VisAxis
+                type="y"
+                :tick-format="(v: number) => `${Math.round(v / 1000)}k`"
             />
-            <VisAxis
-                type="x"
-                :tick-format="(v: number) => monthNames[v].slice(0, 3)"
-                :grid-line="false"
-            /><VisAxis type="y" :tick-format="(v: number) => `${Math.round(v / 1000)}k`" />
         </VisXYContainer>
     </div>
 </template>

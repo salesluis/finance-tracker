@@ -13,9 +13,7 @@ const store = useFinanceStore(),
     route = useRoute(),
     router = useRouter(),
     formOpen = ref(false)
-const entry = computed(() =>
-    store.entries.find((e) => e.id === route.params.id && e.type === props.type),
-)
+const entry = computed(() => store.entries.find((e) => e.id === route.params.id && e.type === props.type))
 const history = computed(() =>
     store.occurrences
         .filter((o) => o.entryId === entry.value?.id)
@@ -33,9 +31,7 @@ async function remove() {
 </script>
 <template>
     <div v-if="entry">
-        <button class="btn-ghost mb-5 !px-0" @click="router.back()">
-            <ArrowLeft :size="17" />Voltar
-        </button>
+        <button class="btn-ghost mb-5 !px-0" @click="router.back()"><ArrowLeft :size="17" />Voltar</button>
         <div class="mb-7 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <div class="mb-3 flex items-center gap-3">
@@ -51,19 +47,13 @@ async function remove() {
                     >
                 </div>
                 <h1 class="text-3xl font-semibold">{{ entry.description }}</h1>
-                <p
-                    class="mt-2 text-2xl font-medium"
-                    :class="type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
-                >
-                    {{ formatCurrency(entry.amount) }}
+                <p class="mt-2 text-2xl font-medium" :class="type === 'income' ? 'text-emerald-400' : 'text-rose-400'">
+                    {{ formatCurrency(entry.amountInCents) }}
                 </p>
             </div>
             <div class="flex gap-2">
-                <button class="btn-secondary" @click="formOpen = true">
-                    <Edit3 :size="16" />Editar</button
-                ><button class="btn-secondary text-rose-400" @click="remove">
-                    <Trash2 :size="16" />Excluir
-                </button>
+                <button class="btn-secondary" @click="formOpen = true"><Edit3 :size="16" />Editar</button
+                ><button class="btn-secondary text-rose-400" @click="remove"><Trash2 :size="16" />Excluir</button>
             </div>
         </div>
         <div class="mb-7 grid gap-4 sm:grid-cols-3">
@@ -100,25 +90,16 @@ async function remove() {
                             {{ o.referenceMonth.slice(0, 4) }}
                         </td>
                         <td>
-                            {{
-                                o.installmentNumber
-                                    ? `${o.installmentNumber}/${o.installmentCount}`
-                                    : '—'
-                            }}
+                            {{ o.installmentNumber ? `${o.installmentNumber}/${o.installmentCount}` : '—' }}
                         </td>
-                        <td>{{ formatCurrency(o.amount) }}</td>
+                        <td>{{ formatCurrency(o.amountInCents) }}</td>
                         <td>{{ formatDate(occurrenceDate(o.referenceMonth, entry.startDate)) }}</td>
                         <td><StatusBadge :status="o.status" /></td>
                         <td>
                             <select
                                 :value="o.status"
                                 class="field !h-9 !w-auto"
-                                @change="
-                                    setStatus(
-                                        o.id,
-                                        ($event.target as HTMLSelectElement).value as EntryStatus,
-                                    )
-                                "
+                                @change="setStatus(o.id, ($event.target as HTMLSelectElement).value as EntryStatus)"
                             >
                                 <option value="planned">Planejado</option>
                                 <option :value="type === 'expense' ? 'paid' : 'received'">
@@ -135,9 +116,7 @@ async function remove() {
     <div v-else-if="store.initialized" class="card grid min-h-80 place-items-center text-center">
         <div>
             <h1 class="text-xl font-semibold">Lançamento não encontrado</h1>
-            <RouterLink
-                class="btn-primary mt-5"
-                :to="type === 'expense' ? '/despesas' : '/receitas'"
+            <RouterLink class="btn-primary mt-5" :to="type === 'expense' ? '/despesas' : '/receitas'"
                 >Voltar à lista</RouterLink
             >
         </div>

@@ -3,20 +3,39 @@ import { entries } from '@/mocks/entries'
 import { occurrences } from '@/mocks/occurrences'
 import { generateOccurrences } from '@/services/occurrence-generator'
 import { uid } from '@/lib/format'
-import type {
-    CreateEntryInput,
-    EntryStatus,
-    FinanceSnapshot,
-    UpdateEntryInput,
-} from '@/types/finance'
+import type { CreateEntryInput, EntryStatus, FinanceSnapshot, UpdateEntryInput } from '@/types/finance'
 import type { FinanceRepository } from './finance-repository'
 
-const KEY = 'finance-tracker:v1'
+const KEY = 'finance-tracker:v2'
+const LEGACY_KEY = 'finance-tracker:v1'
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x))
+
+type LegacySnapshot = Omit<FinanceSnapshot, 'entries' | 'occurrences'> & {
+    entries: Array<Omit<FinanceSnapshot['entries'][number], 'amountInCents'> & { amount: number }>
+    occurrences: Array<Omit<FinanceSnapshot['occurrences'][number], 'amountInCents'> & { amount: number }>
+}
+
 export class MockFinanceRepository implements FinanceRepository {
     private read(): FinanceSnapshot {
         const raw = localStorage.getItem(KEY)
         if (raw) return JSON.parse(raw)
+        const legacyRaw = localStorage.getItem(LEGACY_KEY)
+        if (legacyRaw) {
+            const legacy = JSON.parse(legacyRaw) as LegacySnapshot
+            const migrated: FinanceSnapshot = {
+                ...legacy,
+                entries: legacy.entries.map(({ amount, ...entry }) => ({
+                    ...entry,
+                    amountInCents: Math.round(amount * 100),
+                })),
+                occurrences: legacy.occurrences.map(({ amount, ...occurrence }) => ({
+                    ...occurrence,
+                    amountInCents: Math.round(amount * 100),
+                })),
+            }
+            this.write(migrated)
+            return migrated
+        }
         const seed = {
             categories: clone(categories),
             entries: clone(entries),
@@ -26,9 +45,11 @@ export class MockFinanceRepository implements FinanceRepository {
         this.write(seed)
         return seed
     }
+
     private write(data: FinanceSnapshot) {
         localStorage.setItem(KEY, JSON.stringify(data))
     }
+
     async getCategories() {
         return clone(this.read().categories)
     }
@@ -38,14 +59,12 @@ export class MockFinanceRepository implements FinanceRepository {
     async getOccurrences() {
         return clone(this.read().occurrences)
     }
-    async ensureYear(year: number) {
+    async ensureOccurrencesThroughYear(year: number) {
         const data = this.read()
         for (const entry of data.entries) {
             if ((data.generatedThrough[entry.id] ?? 0) >= year) continue
             const existing = new Set(data.occurrences.map((o) => o.id))
-            data.occurrences.push(
-                ...generateOccurrences(entry, year).filter((o) => !existing.has(o.id)),
-            )
+            data.occurrences.push(...generateOccurrences(entry, year).filter((o) => !existing.has(o.id)))
             data.generatedThrough[entry.id] = year
         }
         this.write(data)
@@ -96,5 +115,6 @@ export class MockFinanceRepository implements FinanceRepository {
         o.status = status
         o.completedAt = status === 'planned' ? undefined : new Date().toISOString().slice(0, 10)
         this.write(data)
+        return clone(o)
     }
 }
