@@ -1,27 +1,40 @@
 import type { Category, FinancialEntry, FinancialOccurrence, ViewMode } from '@/types/finance'
 
 export const isIncluded = (o: FinancialOccurrence, mode: ViewMode) => mode === 'forecast' || o.status !== 'planned'
+
+interface MonthlyTotals {
+    income: number
+    expense: number
+    balance: number
+    planned: number
+}
+
 export function monthlyTotals(
     entries: FinancialEntry[],
     occurrences: FinancialOccurrence[],
     month: string,
     mode: ViewMode,
-) {
-    const selected = occurrences.filter((o) => o.referenceMonth === month && isIncluded(o, mode))
-    const sum = (type: 'income' | 'expense') =>
-        selected
-            .filter((o) => entries.find((e) => e.id === o.entryId)?.type === type)
-            .reduce((a, o) => a + o.amountInCents, 0)
-    const income = sum('income'),
-        expense = sum('expense')
-    return {
-        income,
-        expense,
-        balance: income - expense,
-        planned: occurrences
-            .filter((o) => o.referenceMonth === month && o.status === 'planned')
-            .reduce((a, o) => a + o.amountInCents, 0),
+): MonthlyTotals {
+    const entryTypes = new Map(entries.map((entry) => [entry.id, entry.type]))
+    let income = 0
+    let expense = 0
+    let planned = 0
+
+    for (const occurrence of occurrences) {
+        if (occurrence.referenceMonth !== month) continue
+
+        const type = entryTypes.get(occurrence.entryId)
+        // Uma ocorrência sem o lançamento de origem não tem significado financeiro confiável.
+        if (!type) continue
+
+        if (occurrence.status === 'planned') planned += occurrence.amountInCents
+        if (!isIncluded(occurrence, mode)) continue
+
+        if (type === 'income') income += occurrence.amountInCents
+        else expense += occurrence.amountInCents
     }
+
+    return { income, expense, balance: income - expense, planned }
 }
 export function annualSeries(
     entries: FinancialEntry[],
@@ -41,18 +54,25 @@ export function categoryDistribution(
     month: string,
     mode: ViewMode,
 ) {
+    const entriesById = new Map(entries.map((entry) => [entry.id, entry]))
+    const expensesByCategory = new Map<string, number>()
+
+    for (const occurrence of occurrences) {
+        if (occurrence.referenceMonth !== month || !isIncluded(occurrence, mode)) continue
+
+        const entry = entriesById.get(occurrence.entryId)
+        if (!entry || entry.type !== 'expense') continue
+        expensesByCategory.set(
+            entry.categoryId,
+            (expensesByCategory.get(entry.categoryId) ?? 0) + occurrence.amountInCents,
+        )
+    }
+
     return categories
         .filter((c) => c.type === 'expense')
         .map((category) => ({
             category,
-            value: occurrences
-                .filter(
-                    (o) =>
-                        o.referenceMonth === month &&
-                        isIncluded(o, mode) &&
-                        entries.find((e) => e.id === o.entryId)?.categoryId === category.id,
-                )
-                .reduce((a, o) => a + o.amountInCents, 0),
+            value: expensesByCategory.get(category.id) ?? 0,
         }))
         .filter((x) => x.value > 0)
 }
